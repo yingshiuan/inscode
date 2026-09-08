@@ -59,11 +59,13 @@ export function ExportMenu({
 
   useEffect(() => {
     if (!open) return
-    const onDown = (e: MouseEvent) => {
+    // pointerdown so a tap outside closes it; touch screens synthesise mousedown
+    // late enough that the menu can eat the next tap.
+    const onDown = (e: PointerEvent) => {
       if (!ref.current?.contains(e.target as Node)) setOpen(false)
     }
-    document.addEventListener('mousedown', onDown)
-    return () => document.removeEventListener('mousedown', onDown)
+    document.addEventListener('pointerdown', onDown)
+    return () => document.removeEventListener('pointerdown', onDown)
   }, [open])
 
   const transparent = spec.canvas.bg === null
@@ -153,19 +155,19 @@ export function ExportMenu({
       <button
         onClick={() => setOpen((v) => !v)}
         disabled={!svg}
-        className="h-8 rounded-md bg-ink px-3 text-xs font-medium text-white transition hover:bg-zinc-700 disabled:opacity-40"
+        className="h-9 rounded-md bg-ink px-3 text-xs font-medium text-white transition hover:bg-zinc-700 disabled:opacity-40 lg:h-8"
       >
         Export ▾
       </button>
 
       {open && (
-        <div className="absolute right-0 z-40 mt-2 w-64 rounded-lg border border-line bg-white p-3 shadow-xl">
+        <div className="absolute right-0 z-40 mt-2 max-h-[75dvh] w-64 max-w-[calc(100vw-1.5rem)] overflow-y-auto overscroll-contain rounded-lg border border-line bg-white p-3 shadow-xl">
           <div className="mb-1.5 text-[11px] font-medium text-ink">Size</div>
           {/* The size the design is actually for, so the export does not have to be
               worked out backwards from a round number of pixels. */}
           <button
             onClick={() => setSize(exportPxFor(output))}
-            className={`mb-1 flex h-7 w-full items-center justify-between rounded border px-2 text-[11px] transition ${
+            className={`mb-1 flex h-9 w-full items-center justify-between rounded border px-2 text-[11px] transition lg:h-7 ${
               size === exportPxFor(output)
                 ? 'border-ink bg-ink text-white'
                 : 'border-line hover:bg-panel'
@@ -179,7 +181,7 @@ export function ExportMenu({
               <button
                 key={s}
                 onClick={() => setSize(s)}
-                className={`h-7 rounded border text-[11px] tabular-nums transition ${
+                className={`h-9 rounded border text-[11px] tabular-nums transition lg:h-7 ${
                   size === s ? 'border-ink bg-ink text-white' : 'border-line hover:bg-panel'
                 }`}
               >
@@ -230,7 +232,7 @@ export function ExportMenu({
                 key={f}
                 onClick={() => save(f)}
                 disabled={busy !== null}
-                className="flex w-full items-center justify-between rounded-md px-2 py-2 text-left text-xs transition hover:bg-panel disabled:opacity-50"
+                className="flex w-full items-center justify-between rounded-md px-2 py-2.5 text-left text-xs transition hover:bg-panel disabled:opacity-50 lg:py-2"
               >
                 <span className="font-medium uppercase">{f}</span>
                 <span className="text-[11px] text-muted">
@@ -273,7 +275,7 @@ export function ExportMenu({
                 setOpen(false)
                 onBatch()
               }}
-              className="w-full rounded-md border border-line px-2 py-1.5 text-left text-[11px] transition hover:bg-panel"
+              className="w-full rounded-md border border-line px-2 py-2 text-left text-[11px] transition hover:bg-panel"
             >
               <span className="font-medium text-ink">Batch generate…</span>
               <span className="block text-muted">Many links, one style, as a ZIP</span>

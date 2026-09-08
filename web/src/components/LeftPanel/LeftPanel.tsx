@@ -123,7 +123,8 @@ export function LeftPanel({ render }: { render: RenderResult }) {
             <span className="text-xl text-muted">＋</span>
           )}
           <span className="text-[11px] text-muted">
-            {spec.logo ? 'Replace image' : 'Drop an image, or click to choose'}
+            {spec.logo ? 'Replace image' : 'Choose an image'}
+            {!spec.logo && <span className="hidden lg:inline"> — or drop one here</span>}
           </span>
         </button>
         {fileError && <p className="text-[11px] text-red-600">{fileError}</p>}

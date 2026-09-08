@@ -14,6 +14,9 @@ import { useQrStore } from '../../store/useQrStore'
 /** Snap the logo to the centre lines within this fraction of the code width. */
 const SNAP = 0.014
 
+/** Grab area around each corner handle, in module units. */
+const HANDLE_TOUCH = 2.6
+
 type Drag =
   | { kind: 'move'; startX: number; startY: number; originX: number; originY: number }
   | { kind: 'scale'; corner: number; startScale: number; startDist: number }
@@ -90,7 +93,7 @@ export function QrCanvas({ spec, render }: { spec: QRSpec; render: RenderResult 
   const transparent = spec.canvas.bg === null
 
   return (
-    <div className="relative w-full max-w-[560px]">
+    <div className="relative w-full">
       <div
         className={`relative w-full overflow-hidden rounded-xl border border-line shadow-sm ${
           transparent ? 'checker' : ''
@@ -149,16 +152,8 @@ export function QrCanvas({ spec, render }: { spec: QRSpec; render: RenderResult 
                 [rect.x + rect.w, rect.y + rect.h],
                 [rect.x, rect.y + rect.h],
               ].map(([hx, hy], i) => (
-                <rect
+                <g
                   key={i}
-                  x={hx - 0.45}
-                  y={hy - 0.45}
-                  width={0.9}
-                  height={0.9}
-                  rx={0.18}
-                  fill="#fff"
-                  stroke="#2563eb"
-                  strokeWidth={0.09}
                   className={i % 2 === 0 ? 'cursor-nwse-resize' : 'cursor-nesw-resize'}
                   onPointerDown={(e) =>
                     startDrag(e, (p) => {
@@ -172,7 +167,29 @@ export function QrCanvas({ spec, render }: { spec: QRSpec; render: RenderResult 
                       }
                     })
                   }
-                />
+                >
+                  {/* A fingertip is far wider than the drawn handle, and on a phone
+                      the whole code may be 340px across. The target is invisible and
+                      generous; the handle stays small enough to see past. */}
+                  <rect
+                    x={hx - HANDLE_TOUCH / 2}
+                    y={hy - HANDLE_TOUCH / 2}
+                    width={HANDLE_TOUCH}
+                    height={HANDLE_TOUCH}
+                    fill="transparent"
+                  />
+                  <rect
+                    x={hx - 0.45}
+                    y={hy - 0.45}
+                    width={0.9}
+                    height={0.9}
+                    rx={0.18}
+                    fill="#fff"
+                    stroke="#2563eb"
+                    strokeWidth={0.09}
+                    pointerEvents="none"
+                  />
+                </g>
               ))}
             </g>
           )}
@@ -180,8 +197,12 @@ export function QrCanvas({ spec, render }: { spec: QRSpec; render: RenderResult 
       </div>
 
       {spec.logo && (
-        <p className="mt-2 text-center text-[11px] text-muted">
-          Drag the logo to move it · corners resize · hold <kbd className="rounded border border-line bg-panel px-1">Alt</kbd> to bypass snapping
+        <p className="mt-2 text-center text-[11px] leading-snug text-muted">
+          Drag the logo to move it · corners resize
+          <span className="hidden lg:inline">
+            {' '}· hold <kbd className="rounded border border-line bg-panel px-1">Alt</kbd> to
+            bypass snapping
+          </span>
         </p>
       )}
     </div>
