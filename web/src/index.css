@@ -20,6 +20,10 @@ body {
   color: var(--color-ink);
   background: #fff;
   -webkit-font-smoothing: antialiased;
+  /* The app owns its scrolling regions; pull-to-refresh and rubber-banding on the
+     page behind them only ever interrupt a slider drag. */
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
 }
 
 /* Transparency checkerboard behind the canvas. */
@@ -54,4 +58,47 @@ input[type='range']::-webkit-slider-thumb {
   border-radius: 999px;
   background: #fff;
   border: 1.5px solid var(--color-ink);
+}
+
+input[type='range']::-moz-range-track {
+  height: 3px;
+  border-radius: 999px;
+  background: var(--color-line);
+}
+input[type='range']::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border: 1.5px solid var(--color-ink);
+  border-radius: 999px;
+  background: #fff;
+}
+
+/* A 13px thumb is a mouse target. Fingers get a bigger one, and the taller track
+   gives the drag somewhere to start. */
+@media (pointer: coarse) {
+  input[type='range'] {
+    height: 30px;
+  }
+  input[type='range']::-webkit-slider-thumb {
+    width: 20px;
+    height: 20px;
+    margin-top: -8.5px;
+  }
+  input[type='range']::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* iOS zooms the whole page when a field it focuses has text under 16px, and never
+   zooms back out. The panels stay at their small sizes; the fields do not. */
+@media (pointer: coarse) and (max-width: 1023px) {
+  textarea,
+  input:not([type]),
+  input[type='text'],
+  input[type='number'],
+  input[type='search'],
+  input[type='url'] {
+    font-size: 16px;
+  }
 }

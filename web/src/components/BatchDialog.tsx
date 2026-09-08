@@ -41,9 +41,12 @@ export function BatchDialog({ spec, onClose }: { spec: QRSpec; onClose: () => vo
   }
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-black/30 p-6" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-black/30 p-3 sm:p-6"
+      onClick={onClose}
+    >
       <div
-        className="w-full max-w-lg rounded-xl border border-line bg-white p-5 shadow-2xl"
+        className="max-h-[90dvh] w-full max-w-lg overflow-y-auto overscroll-contain rounded-xl border border-line bg-white p-4 shadow-2xl sm:p-5"
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-sm font-semibold">Batch generate</h2>
@@ -56,18 +59,18 @@ export function BatchDialog({ spec, onClose }: { spec: QRSpec; onClose: () => vo
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          rows={8}
+          rows={6}
           placeholder={'https://insdash.ch/table/1, table-1\nhttps://insdash.ch/table/2, table-2'}
           className="mt-3 w-full resize-none rounded-md border border-line p-2.5 font-mono text-[11px] outline-none focus:border-ink"
         />
 
-        <div className="mt-3 flex items-center gap-3">
+        <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
           <div className="flex gap-1">
             {(['png', 'svg', 'jpg'] as const).map((f) => (
               <button
                 key={f}
                 onClick={() => setFormat(f)}
-                className={`h-7 rounded border px-2 text-[11px] uppercase transition ${
+                className={`h-9 rounded border px-2.5 text-[11px] uppercase transition sm:h-7 sm:px-2 ${
                   format === f ? 'border-ink bg-ink text-white' : 'border-line hover:bg-panel'
                 }`}
               >
@@ -81,7 +84,7 @@ export function BatchDialog({ spec, onClose }: { spec: QRSpec; onClose: () => vo
                 <button
                   key={s}
                   onClick={() => setPx(s)}
-                  className={`h-7 rounded border px-2 text-[11px] tabular-nums transition ${
+                  className={`h-9 rounded border px-2.5 text-[11px] tabular-nums transition sm:h-7 sm:px-2 ${
                     px === s ? 'border-ink bg-ink text-white' : 'border-line hover:bg-panel'
                   }`}
                 >
@@ -90,7 +93,7 @@ export function BatchDialog({ spec, onClose }: { spec: QRSpec; onClose: () => vo
               ))}
             </div>
           )}
-          <span className="ml-auto text-[11px] tabular-nums text-muted">
+          <span className="ml-auto shrink-0 text-[11px] tabular-nums text-muted">
             {items.length} code{items.length === 1 ? '' : 's'}
           </span>
         </div>
@@ -104,13 +107,13 @@ export function BatchDialog({ spec, onClose }: { spec: QRSpec; onClose: () => vo
         </p>
 
         <div className="mt-4 flex justify-end gap-2">
-          <button onClick={onClose} className="h-8 rounded-md border border-line px-3 text-xs hover:bg-panel">
+          <button onClick={onClose} className="h-9 rounded-md border border-line px-3 text-xs hover:bg-panel sm:h-8">
             Cancel
           </button>
           <button
             onClick={run}
             disabled={busy || items.length === 0 || items.length > 200}
-            className="h-8 rounded-md bg-ink px-3 text-xs font-medium text-white transition hover:bg-zinc-700 disabled:opacity-40"
+            className="h-9 rounded-md bg-ink px-3 text-xs font-medium text-white transition hover:bg-zinc-700 disabled:opacity-40 sm:h-8"
           >
             {busy ? 'Generating…' : `Download ZIP`}
           </button>

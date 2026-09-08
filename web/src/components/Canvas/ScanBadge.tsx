@@ -193,6 +193,13 @@ export function ScanBadge({ render, spec }: { render: RenderResult; spec: QRSpec
   const [optical, setOptical] = useState<ScanReport | null>(null)
   const [checking, setChecking] = useState(false)
   const [open, setOpen] = useState(false)
+  const detailRef = useRef<HTMLDivElement>(null)
+
+  // On a narrow screen the preview and this report share a capped, scrolling block,
+  // so opening the numbers otherwise reveals only their first heading.
+  useEffect(() => {
+    if (open) detailRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+  }, [open])
 
   const { svg, matrix, resolved, img } = render
   const modules = matrix ? matrix.size + 2 * spec.canvas.quietZone : 0
@@ -371,13 +378,16 @@ export function ScanBadge({ render, spec }: { render: RenderResult; spec: QRSpec
       )}
 
       {open && integrity && (
-        <div className="mt-3 space-y-4 rounded-lg border border-line bg-white p-3 text-left">
+        <div
+          ref={detailRef}
+          className="mt-3 space-y-4 rounded-lg border border-line bg-white p-3 text-left"
+        >
           <div>
             <h3 className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted">
               Data integrity · exact, from the design
             </h3>
             <div className="space-y-1.5">
-              <div className="flex items-baseline justify-between text-[11px]">
+              <div className="flex items-baseline justify-between gap-3 text-[11px]">
                 <span className="text-ink">Finder patterns a scanner can lock onto</span>
                 <span
                   className={`tabular-nums ${integrity.brokenFinders ? 'font-semibold text-red-700' : 'text-muted'}`}
@@ -386,7 +396,7 @@ export function ScanBadge({ render, spec }: { render: RenderResult; spec: QRSpec
                   {3 - integrity.brokenFinders}/3
                 </span>
               </div>
-              <div className="flex items-baseline justify-between text-[11px]">
+              <div className="flex items-baseline justify-between gap-3 text-[11px]">
                 <span className="text-ink">Grid modules obscured</span>
                 <span
                   className={`tabular-nums ${integrity.gridFlips ? 'text-amber-700' : 'text-muted'}`}
@@ -395,7 +405,7 @@ export function ScanBadge({ render, spec }: { render: RenderResult; spec: QRSpec
                   {integrity.gridFlips}
                 </span>
               </div>
-              <div className="flex items-baseline justify-between text-[11px]">
+              <div className="flex items-baseline justify-between gap-3 text-[11px]">
                 <span className="text-ink">Format information</span>
                 <span
                   className={`tabular-nums ${integrity.formatOk ? 'text-muted' : 'font-semibold text-red-700'}`}
@@ -405,7 +415,7 @@ export function ScanBadge({ render, spec }: { render: RenderResult; spec: QRSpec
                 </span>
               </div>
               {integrity.versionErrors && (
-                <div className="flex items-baseline justify-between text-[11px]">
+                <div className="flex items-baseline justify-between gap-3 text-[11px]">
                   <span className="text-ink">Version information</span>
                   <span
                     className={`tabular-nums ${integrity.versionOk ? 'text-muted' : 'font-semibold text-red-700'}`}
@@ -429,13 +439,13 @@ export function ScanBadge({ render, spec }: { render: RenderResult; spec: QRSpec
               </p>
               {spec.logo && (
                 <div className="space-y-1 pt-1">
-                  <div className="flex items-baseline justify-between text-[11px]">
+                  <div className="flex items-baseline justify-between gap-3 text-[11px]">
                     <span className="text-ink">Largest logo — estimated</span>
                     <span className="tabular-nums text-muted" title="The model's answer, from one render. 95.6% agreement with the decoder over the calibration matrix.">
                       {estimated === null ? '—' : `${Math.round(estimated * 100)}%`}
                     </span>
                   </div>
-                  <div className="flex items-baseline justify-between text-[11px]">
+                  <div className="flex items-baseline justify-between gap-3 text-[11px]">
                     <span className="text-ink">Largest logo — verified</span>
                     <span
                       className={`tabular-nums ${verified === null ? 'text-amber-700' : 'text-emerald-700'}`}
@@ -451,7 +461,7 @@ export function ScanBadge({ render, spec }: { render: RenderResult; spec: QRSpec
                     </span>
                   </div>
                   {integrity.logoScale !== null && (
-                    <div className="flex items-baseline justify-between text-[11px]">
+                    <div className="flex items-baseline justify-between gap-3 text-[11px]">
                       <span className="text-muted">Currently</span>
                       <span className="tabular-nums text-muted">
                         {Math.round(integrity.logoScale * 100)}%
@@ -459,7 +469,7 @@ export function ScanBadge({ render, spec }: { render: RenderResult; spec: QRSpec
                     </div>
                   )}
                   {ink && spec.mode === 'classic' && ink.modulesCovered > 0 && (
-                    <div className="flex items-baseline justify-between text-[11px]">
+                    <div className="flex items-baseline justify-between gap-3 text-[11px]">
                       <span className="text-ink">Modules under the logo</span>
                       <span
                         className={`tabular-nums ${ink.removable ? 'text-amber-700' : 'text-muted'}`}
@@ -485,7 +495,7 @@ export function ScanBadge({ render, spec }: { render: RenderResult; spec: QRSpec
             </h3>
             <ul className="space-y-1">
               {(optical?.conditions ?? []).map((c) => (
-                <li key={c.label} className="flex items-baseline justify-between text-[11px]">
+                <li key={c.label} className="flex items-baseline justify-between gap-3 text-[11px]">
                   <span className={c.ok === false ? 'font-medium text-red-700' : 'text-ink'}>
                     {c.ok === null ? '–' : c.ok ? '✓' : '✕'} {c.label}
                   </span>

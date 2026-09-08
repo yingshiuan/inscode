@@ -16,14 +16,16 @@ export function ColorField({
 
   useEffect(() => {
     if (!open) return
-    const onDown = (e: MouseEvent) => {
+    // pointerdown, not mousedown: a tap on a touch screen only synthesises mouse
+    // events after the gesture settles, which leaves the picker open under a finger.
+    const onDown = (e: PointerEvent) => {
       if (!ref.current?.contains(e.target as Node)) {
         setOpen(false)
         onCommitEnd?.()
       }
     }
-    document.addEventListener('mousedown', onDown)
-    return () => document.removeEventListener('mousedown', onDown)
+    document.addEventListener('pointerdown', onDown)
+    return () => document.removeEventListener('pointerdown', onDown)
   }, [open, onCommitEnd])
 
   return (
@@ -35,7 +37,7 @@ export function ColorField({
             if (!open) onCommitStart?.()
             setOpen((v) => !v)
           }}
-          className={`h-8 w-8 shrink-0 rounded-md border border-line ${value === null ? 'checker' : ''}`}
+          className={`h-10 w-10 shrink-0 rounded-md border border-line lg:h-8 lg:w-8 ${value === null ? 'checker' : ''}`}
           style={value ? { background: value } : undefined}
           aria-label="Choose colour"
         />
@@ -46,14 +48,14 @@ export function ColorField({
             const v = e.target.value.trim()
             if (/^#[0-9a-fA-F]{6}$/.test(v)) onChange(v)
           }}
-          className="h-8 w-full min-w-0 rounded-md border border-line px-2 font-mono text-[11px] uppercase disabled:bg-panel disabled:text-muted"
+          className="h-10 w-full min-w-0 rounded-md border border-line px-2 font-mono text-[11px] uppercase disabled:bg-panel disabled:text-muted lg:h-8"
         />
         {allowTransparent && (
           <button
             type="button"
             onClick={() => onChange(value === null ? '#ffffff' : null)}
             title={value === null ? 'Use a solid colour' : 'Make transparent'}
-            className={`h-8 shrink-0 rounded-md border px-2 text-[11px] transition ${
+            className={`h-10 shrink-0 rounded-md border px-2 text-[11px] transition lg:h-8 ${
               value === null ? 'border-ink bg-ink text-white' : 'border-line text-muted hover:border-zinc-300'
             }`}
           >

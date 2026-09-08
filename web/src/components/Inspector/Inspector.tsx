@@ -6,7 +6,11 @@ import { ColorField } from '../ColorField'
 import { FinderIcon, MarkIcon, ShapeIcon } from '../shapeIcons'
 import { ExportSize } from './ExportSize'
 
-export function Inspector({ render }: { render: RenderResult }) {
+/**
+ * `withExport` is false only on narrow screens, where the export size lives in its
+ * own tab rather than at the bottom of a panel nobody scrolls that far down.
+ */
+export function Inspector({ render, withExport = true }: { render: RenderResult; withExport?: boolean }) {
   const spec = useQrStore((s) => s.spec)
   const { patch, patchLogo, patchPlate, begin, end } = useQrStore()
 
@@ -190,11 +194,13 @@ export function Inspector({ render }: { render: RenderResult }) {
         )}
       </Section>
 
-      <ExportSize
-        spec={spec}
-        svg={render.svg}
-        modules={render.matrix ? render.matrix.size + 2 * spec.canvas.quietZone : 0}
-      />
+      {withExport && (
+        <ExportSize
+          spec={spec}
+          svg={render.svg}
+          modules={render.matrix ? render.matrix.size + 2 * spec.canvas.quietZone : 0}
+        />
+      )}
     </div>
   )
 }
