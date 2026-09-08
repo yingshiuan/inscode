@@ -11,16 +11,23 @@
  * the file changing:
  *
  *     logo file                                largest logo a decoder still reads
- *     colour, alpha preserved                  0.52
- *     same artwork forced to black-and-white   0.52   <- tone costs nothing
- *     colour, alpha flattened onto white       0.46
- *     black-and-white, flattened onto white    0.46
+ *     colour, alpha preserved                  0.72
+ *     same artwork forced to black-and-white   0.64
+ *     colour, alpha flattened onto white       0.48   <- tone stops mattering here
+ *     black-and-white, flattened onto white    0.48
  *     flattened onto black                     0.42
  *
- * Tone is not the variable; opacity is. That matters because it is invisible in the
- * preview -- a flattened white background looks like nothing at all against a white
- * canvas, while quietly holding the safe logo size down. The design just gets a
- * smaller `estimatedSafeScale` and the user is given no reason why.
+ * Tone is not free, but opacity outweighs it about three to one -- and once the file
+ * is flattened the tone difference vanishes entirely, because the background is then
+ * doing most of the damage. The mechanism is area: an alpha channel damages only the
+ * modules the ink covers, a flat file damages the whole bounding rectangle. So the
+ * sparser the mark the worse it is, which is backwards from how the files arrive --
+ * line art is the sparsest and the likeliest to be shipped flat.
+ *
+ * That matters because it is invisible in the preview: a flattened white background
+ * looks like nothing at all against a white canvas, while quietly holding the safe
+ * logo size down. The design just gets a smaller `estimatedSafeScale` and the user is
+ * given no reason why.
  *
  * This module supplies the reason. It reports what share of the artwork is a flat
  * opaque field, and how many of the modules the logo covers are that field rather

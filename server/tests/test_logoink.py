@@ -131,6 +131,13 @@ def flatten(im: Image.Image, bg=(255, 255, 255, 255)) -> Image.Image:
     return out
 
 
+def to_bw(im: Image.Image) -> Image.Image:
+    """The same artwork, forced to pure black and white, alpha untouched."""
+    out = im.convert("L").point(lambda v: 0 if v < 128 else 255).convert("RGBA")
+    out.putalpha(im.getchannel("A"))
+    return out
+
+
 def key_out(im: Image.Image, colour, tol: int = 12) -> Image.Image:
     """Exactly what the warning tells the user to do, so the promise can be checked."""
     out = im.copy()
@@ -209,6 +216,32 @@ def test_rotation_moves_which_modules_are_covered(logo):
     turned = ink_for(design(src, rotation=30))
     assert straight.modules_covered > 0 and turned.modules_covered > 0
     assert straight.modules_background != turned.modules_background
+
+
+def test_flattening_costs_more_than_recolouring(logo):
+    """The claim the docs rest on, kept honest against the fixture that is committed.
+
+    An earlier fixture was a 79%-ink disc, and on that one converting to pure
+    black-and-white cost nothing at all -- which made "tone is not the variable" look
+    like a general law rather than a property of a dense mark. It is not. On sparse
+    artwork tone does cost something; it is just outweighed by opacity, and that is
+    the ordering the warning depends on. Pinned as a comparison rather than as two
+    numbers, because the numbers move with the artwork and the ordering does not.
+    """
+    def largest(im: Image.Image) -> float:
+        best = 0.0
+        for scale in (round(0.20 + 0.02 * i, 2) for i in range(31)):
+            if not reads(design(uri(im), scale=scale), PRODUCTION):
+                break
+            best = scale
+        return best
+
+    alpha = largest(logo)
+    tone_cost = alpha - largest(to_bw(logo))
+    opacity_cost = alpha - largest(flatten(logo))
+    assert opacity_cost > tone_cost, (
+        f"opacity {opacity_cost:.2f} no longer outweighs tone {tone_cost:.2f}"
+    )
 
 
 def test_the_advice_is_true(logo):

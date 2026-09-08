@@ -419,19 +419,25 @@ production decoder still reads:
 
 | logo file | largest safe scale |
 |---|---|
-| colour, alpha preserved | **0.52** |
-| the same artwork forced to pure black-and-white, alpha kept | **0.52** |
-| colour, alpha flattened onto white | 0.46 |
-| black-and-white, flattened onto white | 0.46 |
+| colour, alpha preserved | **0.72** |
+| the same artwork forced to pure black-and-white, alpha kept | 0.64 |
+| colour, alpha flattened onto white | **0.48** |
+| black-and-white, flattened onto white | **0.48** |
 | flattened onto black | 0.42 |
 
-Tone is not the variable. Sweeping the foreground from black through mid grey to
-white, and through saturated red, blue and yellow, moves `estimatedSafeScale` only
-between 0.617 and 0.657 — a step or two of the 0.02 grid, which is noise. Opacity is
-the variable: a logo with an alpha channel damages only the modules its ink covers,
-and a flattened one damages every module in its bounding rectangle. The sparser the
-mark, the more that costs, which is why one-colour and line-art logos suffer most —
-they are the ones usually shipped flat, as JPEG or with a white background baked in.
+Opacity is the dominant term, by about three to one. Tone is not free — sweeping the
+foreground from black through mid grey to white, and through saturated red, blue and
+yellow, moves `estimatedSafeScale` between 0.645 and 0.754 — but flattening the same
+artwork costs 0.24 on its own. And once it is flattened the tone stops mattering at
+all: the colour and the black-and-white versions land on the same 0.48, because by
+then the background is doing most of the damage.
+
+The mechanism is simply area. A logo with an alpha channel damages only the modules
+its ink covers; a flattened one damages every module in its bounding rectangle. So
+the sparser the mark the more it costs — this fixture is a 25%-ink ring and loses
+0.24, where the 79%-ink disc it replaced lost only 0.06. Which is exactly backwards
+from how the files arrive: one-colour and line-art marks are the sparsest *and* the
+ones usually shipped flat, as JPEG or with a white background baked in.
 
 The trap is that it is invisible. A white background on a white canvas looks like
 nothing at all, and the design just quietly gets a smaller safe logo with no reason

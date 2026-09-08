@@ -489,10 +489,13 @@ def test_format_information_is_error_corrected_and_written_twice():
     matter, and even then only past the budget.
 
     Which logo happens to land on the format strips is a property of one symbol's
-    bits, so the size is searched for rather than pinned: hardcoding one meant this
-    stopped testing anything the first time the payload changed.
+    bits *and* of the artwork, so the size is searched for rather than pinned:
+    hardcoding one meant this stopped testing anything the first time the payload
+    changed. The sweep runs well past where any of them land -- a solid mark reaches
+    the strips around 0.46 and a hollow one not until 0.52, because a ring puts its
+    ink on the perimeter and has to be wider before it covers the same cells.
     """
-    for scale in [round(0.20 + 0.02 * i, 2) for i in range(16)]:
+    for scale in [round(0.20 + 0.02 * i, 2) for i in range(26)]:
         spec = QRSpec.model_validate({
             "content": {"text": TEXT, "ecLevel": "L"},
             "logo": {"src": LOGO, "scale": scale},
