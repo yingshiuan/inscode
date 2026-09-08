@@ -1,0 +1,42 @@
+{
+  "v": 1,
+  "content": {
+    "text": "https://insdash.ch",
+    "ecLevel": "H"
+  },
+  "mode": "classic",
+  "canvas": {
+    "quietZone": 4,
+    "moduleSize": 20,
+    "bg": null
+  },
+  "modules": {
+    "shape": "square",
+    "gap": 0,
+    "color": "#000000"
+  },
+  "finders": {
+    "shape": "square",
+    "color": null,
+    "innerColor": null
+  },
+  "logo": {
+    "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAC00lEQVR4nO2dS3LjMAxERdUcIetZ8Rg+vo6h1ax1h5nKwlWujJzoA6AbYPc6sYn3CEpi2XSbEuTj9+Pvlf/b/ixtIk+rAjurlDYCdGYZbTTobDLa6ODRIsLejB08SoT7m2QDHy3C7cWzg48SMXu8aDX4njWZC6gI37M2s7aqDN5zSTLpgNHgW9Z8W8CI8C1rvyVgZPhWDC4LEHwbFpcECL4dk9MCBN+WzSkBgm/P6LAAwT+eM6x+TYmyPo79XV+mNGnMs389CJxVyJGn5cYGfzWCziLjJwmNBf7qDB4p4jsJLtvR7PBR77mXhpz9KwmEiG541wWwDmCBjx7LjJj9TPCjxvSOaXgHMMJHjm2OnP3M8CPGuMc2rAMywEeMdY6Y/Znge4/5K2P3DsgIP3LsFA9iI2f2XH4yz37PGl5Zu3VABfgRtWgJAmf2WH4qzX6vmp7M1QHgSEA1ARWXH8/a1AHgzPq4CS6f7NUB4JgKqLz+e9WoDgBHAsCRAHAkABwJAEcCwJEAcCQAHAmoJCDTN1NYalQHgDMzHFw3aj7ZqwPAMRdQ+TrQHWpTB4AjAQwCrC/EFZehblzTk7k6ABw3AZW6oC8BAjyeBypI6A41vLLWEgSOu4DMXdCXYAFe2xIZJXSnMX9lHLYEZZLQA8f6nwDPzbkMErrjGPfYhl+EmSV0wNh2BXhvUTNK6Mtgp6UwSejAsVCcmLU+aoOnPzGrL+N2oA7tYz607xkdWwk8tvIZhq8yrYkObj16J5nq5NxOANY6hy/C+vjK8ZxhdeouSBLsGZ2+DZUEWzaXngMkwY7J5QcxSbBhcetJWBKm2wxub0WMLGEzqN1kL2hECZtRzebgGJ6YPWM92cx3Qyt3w+ZQm8t2dEUJm1NN+knzqj9pnv3asAV1cfhSwS5iC14+YWs1m4gNdN2iuFh+gGQw3CzABxAtgwH6a6gGM73JVSlssPfyD6elK6MQ8mduAAAAAElFTkSuQmCC",
+    "x": 0.5,
+    "y": 0.5,
+    "scale": 0.22,
+    "rotation": 0,
+    "plate": {
+      "enabled": true,
+      "pad": 0.7,
+      "radius": 0.18,
+      "color": null
+    }
+  },
+  "art": {
+    "mark": "cross",
+    "markSize": 0.6,
+    "loose": false,
+    "clearFinders": false
+  }
+}

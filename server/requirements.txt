@@ -1,0 +1,20 @@
+# Render API
+fastapi==0.141.1
+uvicorn[standard]==0.42.0
+pydantic==2.13.5
+
+# QR + drawing
+qrcode==8.2
+pillow==12.3.0
+
+# SVG rasterisation.
+# resvg, not cairosvg: cairosvg silently ignores <mask> and <clip-path>, which this
+# renderer relies on for a transparent logo plate and for cutting light modules out
+# of full-bleed artwork. A rasteriser that drops those produces exports that do not
+# match the preview -- and, in art mode, do not scan.
+resvg-py==0.5.0
+
+# Scannability stress testing
+zxing-cpp==3.1.1
+
+pytest==9.0.2

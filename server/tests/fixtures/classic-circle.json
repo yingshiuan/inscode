@@ -1,0 +1,30 @@
+{
+  "v": 1,
+  "content": {
+    "text": "https://insdash.ch",
+    "ecLevel": "H"
+  },
+  "mode": "classic",
+  "canvas": {
+    "quietZone": 4,
+    "moduleSize": 20,
+    "bg": "#ffffff"
+  },
+  "modules": {
+    "shape": "circle",
+    "gap": 0,
+    "color": "#000000"
+  },
+  "finders": {
+    "shape": "square",
+    "color": null,
+    "innerColor": null
+  },
+  "logo": null,
+  "art": {
+    "mark": "cross",
+    "markSize": 0.6,
+    "loose": false,
+    "clearFinders": false
+  }
+}

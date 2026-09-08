@@ -1,0 +1,57 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-ink: #16181d;
+  --color-muted: #6b7280;
+  --color-line: #e4e4e7;
+  --color-panel: #fafafa;
+  --color-accent: #2563eb;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: var(--color-ink);
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Transparency checkerboard behind the canvas. */
+.checker {
+  background-image:
+    linear-gradient(45deg, #e9e9ec 25%, transparent 25%),
+    linear-gradient(-45deg, #e9e9ec 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #e9e9ec 75%),
+    linear-gradient(-45deg, transparent 75%, #e9e9ec 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+  background-color: #fff;
+}
+
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 18px;
+  background: transparent;
+  cursor: pointer;
+}
+input[type='range']::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 999px;
+  background: var(--color-line);
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 13px;
+  height: 13px;
+  margin-top: -5px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1.5px solid var(--color-ink);
+}

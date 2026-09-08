@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.vite/
+server/tests/fixtures/ts/
+.pytest_cache/
