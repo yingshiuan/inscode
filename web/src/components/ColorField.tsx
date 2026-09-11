@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { HexColorPicker } from 'react-colorful'
+import { parseHex } from './hexColor'
 
 /** A colour swatch that opens a picker. `null` renders as the transparency checker. */
 export function ColorField({
@@ -12,6 +13,8 @@ export function ColorField({
   allowTransparent?: boolean
 }) {
   const [open, setOpen] = useState(false)
+  /** What is in the text box while it disagrees with `value`; null shows `value`. */
+  const [draft, setDraft] = useState<string | null>(null)
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -28,6 +31,11 @@ export function ColorField({
     return () => document.removeEventListener('pointerdown', onDown)
   }, [open, onCommitEnd])
 
+  const apply = (text: string) => {
+    const hex = parseHex(text)
+    if (hex && hex !== value?.toLowerCase()) onChange(hex)
+  }
+
   return (
     <div ref={ref} className="relative">
       <div className="flex items-center gap-2">
@@ -42,11 +50,31 @@ export function ColorField({
           aria-label="Choose colour"
         />
         <input
-          value={value ?? 'transparent'}
+          value={draft ?? value ?? 'transparent'}
           disabled={value === null}
           onChange={(e) => {
-            const v = e.target.value.trim()
-            if (/^#[0-9a-fA-F]{6}$/.test(v)) onChange(v)
+            // The box has to hold half-typed text, or every keystroke short of a whole
+            // colour snaps back and the field can't be edited at all. Only a complete
+            // six-digit colour goes live: `#fff` is also the start of `#fff000`, and
+            // applying it would land a history entry for a colour nobody chose.
+            const text = e.target.value
+            setDraft(text)
+            if (text.trim().replace(/^#/, '').length === 6) apply(text)
+          }}
+          onPaste={(e) => {
+            // A pasted colour replaces the field instead of being spliced in at the cursor.
+            const hex = parseHex(e.clipboardData.getData('text'))
+            if (!hex) return
+            e.preventDefault()
+            setDraft(null)
+            apply(hex)
+          }}
+          onBlur={() => {
+            if (draft !== null) apply(draft)
+            setDraft(null)
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') e.currentTarget.blur()
           }}
           className="h-10 w-full min-w-0 rounded-md border border-line px-2 font-mono text-[11px] uppercase disabled:bg-panel disabled:text-muted lg:h-8"
         />
