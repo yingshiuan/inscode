@@ -3,10 +3,17 @@
  * 4000px PNG is the preview at a different scale -- never a second drawing.
  */
 
-/** Force explicit pixel dimensions on an SVG root. Safari rasterises to nothing without them. */
+/**
+ * Force explicit pixel dimensions on an SVG root. Safari rasterises to nothing without them.
+ *
+ * The root tag only: every width/height inside is in module units, and an <image> or
+ * <rect> stripped of them draws nothing -- the logo, the background and the plate mask
+ * all silently vanish from the file.
+ */
 export function withPixelSize(svg: string, px: number): string {
-  const sized = svg.replace(/\s(width|height)="[^"]*"/g, '')
-  return sized.replace('<svg ', `<svg width="${px}" height="${px}" `)
+  return svg.replace(/<svg\b[^>]*>/, (root) =>
+    root.replace(/\s(width|height)="[^"]*"/g, '').replace('<svg ', `<svg width="${px}" height="${px}" `),
+  )
 }
 
 export function svgBlob(svg: string): Blob {
