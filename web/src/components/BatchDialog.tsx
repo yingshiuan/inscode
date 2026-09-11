@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { QRSpec } from '../qr/spec'
 import { renderBatch } from '../api/client'
-import { download } from '../export/render'
+import { download, svgLogoAsPng } from '../export/render'
 
 /**
  * One design, many payloads. Styling is already settled by the time you get here;
@@ -31,6 +31,9 @@ export function BatchDialog({ spec, onClose }: { spec: QRSpec; onClose: () => vo
       // The template's own encode belongs to a different payload; the server
       // re-encodes per item.
       const template = { ...spec, encoded: undefined, art: { ...spec.art, cells: undefined } }
+      // Figma draws nothing for an SVG logo inside an .svg file; see svgLogoAsPng.
+      const png = format === 'svg' && template.logo ? await svgLogoAsPng(template.logo.src, px) : null
+      if (png && template.logo) template.logo = { ...template.logo, src: png }
       download(await renderBatch(template, items, format, px), 'qr-codes.zip')
       onClose()
     } catch (e) {
