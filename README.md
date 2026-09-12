@@ -492,3 +492,7 @@ is wrapped in try/catch: private windows and blocked site data throw on access.
 Share links and saved presets need persistence, which is out of scope by choice —
 the API stores nothing. Presets live in the browser's local storage. A `QRSpec` is
 small enough to pack into a URL hash if that is ever wanted, minus the logo.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
