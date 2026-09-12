@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { QRSpec } from '../qr/spec'
-import { download, filenameFor, rasterize, svgBlob, withPixelSize } from '../export/render'
+import { download, filenameFor, rasterize, svgBlob, svgLogoAsPng, withPixelSize } from '../export/render'
 import { ApiError, apiAvailable, renderOnServer } from '../api/client'
 import { describeOutput, exportPxFor, PRINT_DPI, pxToMm } from '../qr/output'
 import { designKey, PRODUCTION, reads } from '../qr/oracle'
@@ -83,9 +83,9 @@ export function ExportMenu({
       : null
 
   /** Export through the API, whose 422 is a decoder verdict on this exact artifact. */
-  const saveViaServer = async (format: 'png' | 'jpg' | 'svg'): Promise<ExportDecision | null> => {
+  const saveViaServer = async (format: 'png' | 'jpg' | 'svg', drawn: QRSpec): Promise<ExportDecision | null> => {
     try {
-      download(await renderOnServer(resolved!, format, size), `${stem}.${format}`)
+      download(await renderOnServer(drawn, format, size), `${stem}.${format}`)
       setOpen(false)
       return null
     } catch (e) {
@@ -102,13 +102,20 @@ export function ExportMenu({
     setBusy(format)
     setBlocked(null)
     try {
-      // The whole gate: this exact artifact, put to the production decoder.
-      const verdict = await reads(svg, spec.content.text, modules, PRODUCTION)
+      // Figma draws nothing for an <image> holding an SVG, so an .svg file carries a
+      // vector logo as a PNG -- and it is that file, not the preview, that gets checked.
+      const logoSrc = format === 'svg' ? spec.logo?.src : undefined
+      const png = logoSrc ? await svgLogoAsPng(logoSrc, size) : null
+      const fileSvg = logoSrc && png ? svg.split(logoSrc).join(png) : svg
+      const fileSpec = png && resolved?.logo ? { ...resolved, logo: { ...resolved.logo, src: png } } : resolved
 
-      if (verdict === 'unavailable' && resolved) {
+      // The whole gate: this exact artifact, put to the production decoder.
+      const verdict = await reads(fileSvg, spec.content.text, modules, PRODUCTION)
+
+      if (verdict === 'unavailable' && fileSpec) {
         // Borrow the API's verdict rather than refusing on no evidence. Verification
         // there is part of rendering, so the answer arrives as the file itself.
-        setBlocked(await saveViaServer(format))
+        setBlocked(await saveViaServer(format, fileSpec))
         return
       }
 
@@ -121,13 +128,13 @@ export function ExportMenu({
         setBlocked(decision)
         return
       }
-      if (server && resolved) {
+      if (server && fileSpec) {
         // The resolved spec carries the browser's own encode and art decisions, so
         // the server draws what the preview showed instead of deciding again.
-        setBlocked(await saveViaServer(format))
+        setBlocked(await saveViaServer(format, fileSpec))
         return
       } else if (format === 'svg') {
-        download(svgBlob(withPixelSize(svg, size)), `${stem}.svg`)
+        download(svgBlob(withPixelSize(fileSvg, size)), `${stem}.svg`)
       } else if (format === 'png') {
         download(await rasterize(svg, size), `${stem}.png`)
       } else {
