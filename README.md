@@ -9,6 +9,8 @@ decoder can read that exact file. Nothing is written that has not been read back
 
 Grown from `python/qr_logo.py`, which is kept as the reference implementation.
 
+![inscode with the insdash logo, dot modules and all scan checks passing](assets/screenshot.png)
+
 <pre>
 ┌──────────────────────────────────────────┐
 │ ▣ inscode        [Undo][Redo]  [Export ▾]│
