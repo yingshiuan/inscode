@@ -11,6 +11,23 @@ Grown from `python/qr_logo.py`, which is kept as the reference implementation.
 
 ![inscode with the insdash logo, dot modules and all scan checks passing](assets/screenshot.png)
 
+<pre>
+┌──────────────────────────────────────────┐
+│ ▣ inscode        [Undo][Redo]  [Export ▾]│
+├────────┬───────────────────────┬─────────┤
+│ CONTENT│                       │ STYLE   │
+│ Logo   │      ┌─────────┐      │ ▪ ● ✚ ◆ │
+│ [drop] │      │ ▪ ◍LOGO │      │ ██  ░░  │
+│ Mode   │      └─────────┘      │ ○  □  ◉ │
+│        │   drag logo to move   │─────────│
+│        │  ● Data intact — 3    │ EXPORT  │
+│        │    codewords spare    │ 40 mm   │
+│        │  ● At 40 mm: 1.08 mm  │ ──○───  │
+│        │    per module         │    ▪    │
+│        │                       │ actual  │
+└────────┴───────────────────────┴─────────┘
+</pre>
+
 ## Running it
 
 Two processes. The web tool works on its own; the API adds print-resolution
